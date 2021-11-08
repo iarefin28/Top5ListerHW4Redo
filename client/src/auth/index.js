@@ -1,6 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useHistory } from 'react-router-dom'
 import api from '../api'
+import { Button } from "@mui/material";
+import { Modal } from "@mui/material";
+import { Box } from "@mui/system";
+import { Alert } from "@mui/material";
+import RegisterScreen from "../components/RegisterScreen";
 
 const AuthContext = createContext();
 console.log("create AuthContext: " + AuthContext);
@@ -15,13 +20,15 @@ export const AuthActionType = {
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
-        loggedIn: false
+        loggedIn: false,
+        //isModalOpen: false
     });
     const history = useHistory();
+    
 
-    useEffect(() => {
-        auth.getLoggedIn();
-    }, []);
+    //useEffect(() => {
+    //    auth.getLoggedIn();
+    //}, []);
 
     const authReducer = (action) => {
         const { type, payload } = action;
@@ -44,6 +51,12 @@ function AuthContextProvider(props) {
                     loggedIn: true
                 });
             }
+            case AuthActionType.LOGOUT_USER: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false
+                });
+            }
             default:
                 return auth;
         }
@@ -63,30 +76,61 @@ function AuthContextProvider(props) {
     }
 
     auth.registerUser = async function(userData, store) {
-        const response = await api.registerUser(userData);      
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
+        try{
+            const response = await api.registerUser(userData);      
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.REGISTER_USER,
+                    payload: {
                     user: response.data.user
-                }
-            })
-            history.push("/");
-            store.loadIdNamePairs();
+                    }
+                })
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+        } catch(err) {
+            //setModal(true);
+            //console.log(isModalOpen);
         }
     }
 
     auth.loginUser = async function(userData, store) {
-        const response = await api.loginUser(userData);      
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
-            store.loadIdNamePairs();
+        try{
+            const response = await api.loginUser(userData); 
+
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+            
+        } catch (err) {
+    
+        }
+    }
+
+    auth.logoutUser = async function(userData, store){
+        try{
+            const response = await api.logoutUser(userData); 
+
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.LOGOUT_USER,
+                    payload: {
+                    }
+                })
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+            
+        } catch (err) {
+    
         }
     }
 

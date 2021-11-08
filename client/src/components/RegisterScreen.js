@@ -1,9 +1,10 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -12,10 +13,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { GlobalStoreContext } from '../store'
+import { Alert } from '@mui/material';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext)
+    const [isModalOpen, setModal] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -29,8 +32,36 @@ export default function RegisterScreen() {
         }, store);
     };
 
+    const handleCloseModal = (event) => {
+        event.preventDefault();
+        setModal(false);
+    }
+
+    console.log(auth.isModalOpen);
     return (
             <Container component="main" maxWidth="xs">
+                <Modal
+                    open={isModalOpen}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2
+                    }}>
+                        <Alert severity="warning">Insufficient fields!</Alert>
+                        <Button onClick={handleCloseModal}>Close</Button>
+                    </Box>
+                </Modal>
+                
+
                 <CssBaseline />
                 <Box
                     sx={{

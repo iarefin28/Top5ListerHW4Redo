@@ -128,6 +128,7 @@ loginUser = async (req, res) => {
     }
 }
 
+
 module.exports = {
     getLoggedIn,
     registerUser,
