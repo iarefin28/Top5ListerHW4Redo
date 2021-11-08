@@ -14,14 +14,18 @@ console.log("create AuthContext: " + AuthContext);
 export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER",
-    LOGIN_USER: "LOGIN_USER"
+    LOGIN_USER: "LOGIN_USER",
+    LOGOUT_USER: "LOGOUT_USER",
+    OPEN_MODAL: "OPEN_MODAL",
+    CLOSE_MODAL: "CLOSE_MODAL"
 }
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
-        //isModalOpen: false
+        isModalOpen: false,
+        error: ""
     });
     const history = useHistory();
     
@@ -36,26 +40,49 @@ function AuthContextProvider(props) {
             case AuthActionType.GET_LOGGED_IN: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: payload.loggedIn
+                    loggedIn: payload.loggedIn,
+                    error: ""
                 });
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    isModalOpen: false,
+                    error: ""
                 });
             }
             case AuthActionType.LOGIN_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    isModalOpen: false,
+                    error: ""
                 });
             }
             case AuthActionType.LOGOUT_USER: {
                 return setAuth({
                     user: null,
-                    loggedIn: false
+                    loggedIn: false,
+                    isModalOpen: false,
+                    error: ""
                 });
+            }
+            case AuthActionType.OPEN_MODAL: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    isModalOpen: true,
+                    error: payload.error
+                })
+            }
+            case AuthActionType.CLOSE_MODAL: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    isModalOpen: false,
+                    error: ""
+                })
             }
             default:
                 return auth;
@@ -75,7 +102,17 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.closeModal = async function(){
+        authReducer({
+            type: AuthActionType.CLOSE_MODAL,
+            payload: {
+
+            }
+        })
+    }
+
     auth.registerUser = async function(userData, store) {
+        console.log(auth.isModalOpen);
         try{
             const response = await api.registerUser(userData);      
             if (response.status === 200) {
@@ -89,8 +126,12 @@ function AuthContextProvider(props) {
                 store.loadIdNamePairs();
             }
         } catch(err) {
-            //setModal(true);
-            //console.log(isModalOpen);
+            authReducer({
+                type: AuthActionType.OPEN_MODAL,
+                payload: {
+                    error: err.response.data.errorMessage
+                }
+            })
         }
     }
 
@@ -111,7 +152,12 @@ function AuthContextProvider(props) {
             }
             
         } catch (err) {
-    
+            authReducer({
+                type: AuthActionType.OPEN_MODAL,
+                payload: {
+                    error: err.response.data.errorMessage
+                }
+            })
         }
     }
 

@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
+import Modal from '@mui/material/Modal';
+import { Alert } from '@mui/material';
 
 function Copyright(props) {
   return (
@@ -34,6 +36,7 @@ const theme = createTheme();
 export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
+  const isModalOpen = auth.isModalOpen
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -51,9 +54,36 @@ export default function LoginScreen() {
     });
   };
 
+  const handleCloseModal = (event) => {
+    event.preventDefault();
+    auth.closeModal();
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
+      <Modal
+                    open={isModalOpen}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2
+                    }}>
+                        <Alert severity="warning">{auth.error}</Alert>
+                        <Button onClick={handleCloseModal}>Close</Button>
+                    </Box>
+                </Modal>
+
+
         <CssBaseline />
         <Grid
           item

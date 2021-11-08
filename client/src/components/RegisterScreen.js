@@ -18,7 +18,7 @@ import { Alert } from '@mui/material';
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext)
-    const [isModalOpen, setModal] = useState(false);
+    const isModalOpen = auth.isModalOpen
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -34,10 +34,9 @@ export default function RegisterScreen() {
 
     const handleCloseModal = (event) => {
         event.preventDefault();
-        setModal(false);
+        auth.closeModal();
     }
 
-    console.log(auth.isModalOpen);
     return (
             <Container component="main" maxWidth="xs">
                 <Modal
@@ -56,7 +55,7 @@ export default function RegisterScreen() {
                         p: 4,
                         borderRadius: 2
                     }}>
-                        <Alert severity="warning">Insufficient fields!</Alert>
+                        <Alert severity="warning">{auth.error}</Alert>
                         <Button onClick={handleCloseModal}>Close</Button>
                     </Box>
                 </Modal>
