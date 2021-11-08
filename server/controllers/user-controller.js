@@ -106,6 +106,14 @@ loginUser = async (req, res) => {
         }
 
         const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
+        if (!passwordCorrect) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "Username or password is incorrect"
+                })
+        }
 
         // LOGIN THE USER
         const token = auth.signToken(existingUser);
