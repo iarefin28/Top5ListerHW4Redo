@@ -346,6 +346,28 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.changeItemName = function (id, newName){
+        let oldname = store.currentList.items[id];
+        store.currentList.items[id] = newName;
+        store.updateCurrentList();
+        if(!(oldname === newName)){
+            document.getElementById("undo-button").style.opacity = 1.0;
+        }
+        document.getElementById("close-button").style.opacity = 1.0;
+        if(tps.hasTransactionToUndo()){
+            document.getElementById("undo-button").style.opacity = 1.0;
+        }
+        if(tps.hasTransactionToRedo()){
+            document.getElementById("redo-button").style.opacity = 1.0;
+        }
+    }
+
+    store.addChangeItemTransaction = function (index, newItemName){
+        let oldName = store.currentList.items[index];
+        let transaction = new UpdateItem_Transaction(store, oldName, newItemName, index);
+        tps.addTransaction(transaction);
+    }
+
     store.undo = function () {
         tps.undoTransaction();
     }
@@ -372,12 +394,12 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING AN ITEM
     store.setIsItemEditActive = function () {
+        document.getElementById("close-button").style.opacity = 0.2;
         storeReducer({
-            type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
+            type: GlobalStoreActionType.ITEM_EDIT_ACTIVE,
             payload: null
         });
     }
-
     return (
         <GlobalStoreContext.Provider value={{
             store
