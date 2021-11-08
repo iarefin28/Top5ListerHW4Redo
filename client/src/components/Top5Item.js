@@ -102,13 +102,9 @@ function Top5Item(props) {
             onDrop={handleDrop}
             draggable="true"
         >
-            <input
-                type="button"
-                id={"edit-item-" + index + 1}
-                className="list-card-button"
-                onClick={handleEditItem}
-                value={"\u270E"}
-            />
+           <IconButton aria-label='edit'>
+                    <EditIcon style={{fontSize:'48pt'}} onClick={handleEditItem}/>
+            </IconButton>
             {props.text}
         </div> 
 
@@ -131,6 +127,7 @@ function Top5Item(props) {
                 autoFocus
             />
     }
+
 
     return (
         itemElement

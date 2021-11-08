@@ -74,9 +74,8 @@ body {
   float: right;
 }
 
-.top5-button,
-.top5-button-disabled {
-  font-size: 36pt;
+.top5-button {
+  font-size: 46pt;
   border-width: 0px;
   float: left;
   color: black;
