@@ -128,9 +128,19 @@ loginUser = async (req, res) => {
     }
 }
 
-
+logoutUser = async (req, res) => {
+    try {
+        await res.clearCookie("token").status(200).json({
+            success: true,
+        }).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
 module.exports = {
     getLoggedIn,
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser
 }
