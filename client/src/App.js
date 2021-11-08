@@ -6,11 +6,12 @@ import { GlobalStoreContextProvider } from './store'
 import {
     AppBanner,
     HomeWrapper,
-    LoginScreen,
     RegisterScreen,
     Statusbar,
     WorkspaceScreen
 } from './components'
+
+import LoginScreen from './components/LoginScreen';
 /*
     This is our application's top-level component.
     
