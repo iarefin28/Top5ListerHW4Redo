@@ -400,6 +400,50 @@ function GlobalStoreContextProvider(props) {
             payload: null
         });
     }
+
+    store.showDeleteModal = function (id) {
+        async function asyncShowDeleteModal(){
+            let response = await api.getTop5ListById(id);
+            if(response.data.success){
+                let top5List = response.data.top5List;
+
+                storeReducer({
+                    type: GlobalStoreActionType.SHOW_DELETE_MODAL,
+                    payload: top5List
+                });
+                let a = document.getElementById("delete-modal");
+                a.classList.add("is-visible");
+            }
+        }
+        asyncShowDeleteModal();
+    }
+
+    store.deleteMarkedList = function() {
+        async function asyncDeleteMarkedList(){
+            let response = await api.deleteTop5ListById(
+                store.listMarkedForDeletion._id
+            );
+            if(response.data.success){
+                store.hideDeleteListModal();
+                store.loadIdNamePairs();
+
+                storeReducer({
+                    type: GlobalStoreActionType.DELETE_LIST,
+                    payload: null
+                });
+            }
+            else{
+                store.hideDeleteListModal();
+                store.loadIdNamePairs();
+            }   
+        }
+        asyncDeleteMarkedList();
+    }
+
+    store.hideDeleteListModal = function() {
+        let a = document.getElementById("delete-modal");
+        a.classList.remove("is-visible");
+    }
     return (
         <GlobalStoreContext.Provider value={{
             store

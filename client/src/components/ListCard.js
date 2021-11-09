@@ -6,6 +6,8 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Modal } from '@mui/material';
+import DeleteModal from './DeleteModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -42,8 +44,12 @@ function ListCard(props) {
 
     async function handleDeleteList(event, id) {
         event.stopPropagation();
+        store.showDeleteModal(id);
         store.markListForDeletion(id);
+        
     }
+
+    
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
